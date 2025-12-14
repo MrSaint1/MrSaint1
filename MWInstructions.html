@@ -11,6 +11,12 @@
       margin: 24px auto;
       padding: 0 16px;
       line-height: 1.6;
+
+      /* Disable text selection */
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
     }
     h1 {
       font-size: 1.5rem;
@@ -22,6 +28,7 @@
       border-radius: 12px;
       margin: 12px 0 16px;
       display: block;
+      pointer-events: none; /* Can't drag image easily */
     }
     ol {
       margin-left: 1.2rem;
@@ -40,14 +47,34 @@
     }
   </style>
 </head>
-<body>
+
+<!-- disable right-click, text selection and drag -->
+<body oncontextmenu="return false"
+      onselectstart="return false"
+      ondragstart="return false">
   <h1>Video Task Instructions</h1>
   <div id="content">Loading latest videos…</div>
 
   <script>
+    // === Disable copy shortcuts & copy event ===
+    document.addEventListener("copy", function (e) {
+      e.preventDefault();
+      // Optional: show a message (you can remove this line if you don't want a popup)
+      // alert("Copying is disabled on this page.");
+    });
+
+    document.addEventListener("keydown", function (e) {
+      const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+      const ctrlOrCmd = isMac ? e.metaKey : e.ctrlKey;
+      // Block Ctrl/Cmd + C, Ctrl/Cmd + X, Ctrl/Cmd + A (select all)
+      if (ctrlOrCmd && ["c", "x", "a"].includes(e.key.toLowerCase())) {
+        e.preventDefault();
+      }
+    });
+
     // === CONFIG – change these ===
-    const API_KEY = "AIzaSyB9b6Xk_HXyzwIv9TxGhBLrg4wjT1UwbSc";          // ← put your YouTube Data API key here
-    const CHANNEL_ID = "UC3_1NCqJD5Ba9QYWhihksbw";    // ← put your channel ID here
+    const API_KEY = "AIzaSyB9b6Xk_HXyzwIv9TxGhBLrg4wjT1UwbSc";          // ← your YouTube Data API key
+    const CHANNEL_ID = "UC3_1NCqJD5Ba9QYWhihksbw";    // ← your channel ID
     const MAX_RESULTS = 8;                   // how many latest videos to consider
 
     const contentEl = document.getElementById("content");
@@ -69,79 +96,78 @@
     }
 
     async function fetchLatestVideos() {
-  // 1) Get the "uploads" playlist ID for this channel
-  const channelsUrl = new URL("https://www.googleapis.com/youtube/v3/channels");
-  channelsUrl.searchParams.set("key", API_KEY);
-  channelsUrl.searchParams.set("id", CHANNEL_ID);
-  channelsUrl.searchParams.set("part", "contentDetails");
+      // 1) Get the "uploads" playlist ID for this channel
+      const channelsUrl = new URL("https://www.googleapis.com/youtube/v3/channels");
+      channelsUrl.searchParams.set("key", API_KEY);
+      channelsUrl.searchParams.set("id", CHANNEL_ID);
+      channelsUrl.searchParams.set("part", "contentDetails");
 
-  const channelsRes = await fetch(channelsUrl.toString());
-  if (!channelsRes.ok) {
-    throw new Error("Failed to fetch channel details");
-  }
-  const channelsData = await channelsRes.json();
+      const channelsRes = await fetch(channelsUrl.toString());
+      if (!channelsRes.ok) {
+        throw new Error("Failed to fetch channel details");
+      }
+      const channelsData = await channelsRes.json();
 
-  const uploadsPlaylistId =
-    channelsData.items?.[0]?.contentDetails?.relatedPlaylists?.uploads;
+      const uploadsPlaylistId =
+        channelsData.items?.[0]?.contentDetails?.relatedPlaylists?.uploads;
 
-  if (!uploadsPlaylistId) {
-    throw new Error("Could not find uploads playlist for this channel.");
-  }
+      if (!uploadsPlaylistId) {
+        throw new Error("Could not find uploads playlist for this channel.");
+      }
 
-  // 2) Get latest items from the uploads playlist (these ARE your latest uploads)
-  const playlistUrl = new URL("https://www.googleapis.com/youtube/v3/playlistItems");
-  playlistUrl.searchParams.set("key", API_KEY);
-  playlistUrl.searchParams.set("playlistId", uploadsPlaylistId);
-  playlistUrl.searchParams.set("part", "contentDetails,snippet");
-  playlistUrl.searchParams.set("maxResults", MAX_RESULTS.toString());
+      // 2) Get latest items from the uploads playlist (these ARE your latest uploads)
+      const playlistUrl = new URL("https://www.googleapis.com/youtube/v3/playlistItems");
+      playlistUrl.searchParams.set("key", API_KEY);
+      playlistUrl.searchParams.set("playlistId", uploadsPlaylistId);
+      playlistUrl.searchParams.set("part", "contentDetails,snippet");
+      playlistUrl.searchParams.set("maxResults", MAX_RESULTS.toString());
 
-  const playlistRes = await fetch(playlistUrl.toString());
-  if (!playlistRes.ok) {
-    throw new Error("Failed to fetch uploads playlist items");
-  }
-  const playlistData = await playlistRes.json();
+      const playlistRes = await fetch(playlistUrl.toString());
+      if (!playlistRes.ok) {
+        throw new Error("Failed to fetch uploads playlist items");
+      }
+      const playlistData = await playlistRes.json();
 
-  const playlistItems = playlistData.items || [];
-  if (!playlistItems.length) {
-    throw new Error("No videos found in uploads playlist.");
-  }
+      const playlistItems = playlistData.items || [];
+      if (!playlistItems.length) {
+        throw new Error("No videos found in uploads playlist.");
+      }
 
-  // Extract video IDs from the playlist items
-  const videoIds = playlistItems
-    .map(item => item.contentDetails && item.contentDetails.videoId)
-    .filter(Boolean);
+      // Extract video IDs from the playlist items
+      const videoIds = playlistItems
+        .map(item => item.contentDetails && item.contentDetails.videoId)
+        .filter(Boolean);
 
-  if (!videoIds.length) {
-    throw new Error("No valid video IDs found in uploads playlist.");
-  }
+      if (!videoIds.length) {
+        throw new Error("No valid video IDs found in uploads playlist.");
+      }
 
-  // 3) Get video details (duration + tags) for exactly these videos
-  const videosUrl = new URL("https://www.googleapis.com/youtube/v3/videos");
-  videosUrl.searchParams.set("key", API_KEY);
-  videosUrl.searchParams.set("id", videoIds.join(","));
-  videosUrl.searchParams.set("part", "contentDetails,snippet");
+      // 3) Get video details (duration + tags) for exactly these videos
+      const videosUrl = new URL("https://www.googleapis.com/youtube/v3/videos");
+      videosUrl.searchParams.set("key", API_KEY);
+      videosUrl.searchParams.set("id", videoIds.join(","));
+      videosUrl.searchParams.set("part", "contentDetails,snippet");
 
-  const videosRes = await fetch(videosUrl.toString());
-  if (!videosRes.ok) {
-    throw new Error("Failed to fetch video details");
-  }
-  const videosData = await videosRes.json();
+      const videosRes = await fetch(videosUrl.toString());
+      if (!videosRes.ok) {
+        throw new Error("Failed to fetch video details");
+      }
+      const videosData = await videosRes.json();
 
-  let videos = videosData.items || [];
+      let videos = videosData.items || [];
 
-  // 4) Just to be extra-safe, sort them by publishedAt DESC and limit to MAX_RESULTS
-  videos = videos
-    .filter(v => v.snippet && v.snippet.publishedAt)
-    .sort(
-      (a, b) =>
-        new Date(b.snippet.publishedAt).getTime() -
-        new Date(a.snippet.publishedAt).getTime()
-    )
-    .slice(0, MAX_RESULTS);
+      // 4) Just to be extra-safe, sort them by publishedAt DESC and limit to MAX_RESULTS
+      videos = videos
+        .filter(v => v.snippet && v.snippet.publishedAt)
+        .sort(
+          (a, b) =>
+            new Date(b.snippet.publishedAt).getTime() -
+            new Date(a.snippet.publishedAt).getTime()
+        )
+        .slice(0, MAX_RESULTS);
 
-  return videos;
-}
-
+      return videos;
+    }
 
     function renderInstructions(video) {
       const snippet = video.snippet || {};
@@ -171,7 +197,7 @@
         ${thumbUrl ? `<img src="${thumbUrl}" alt="Video thumbnail" class="thumbnail" />` : ""}
         <h2>Instructions:</h2>
         <ol>
-          <li>Open YouTube and search for one of the following keywords: <strong>${keywordList || "(no tags – use the video title)"}</strong></li>
+          <li>Open YouTube and search for ONE of the following keywords (TYPE it – do NOT COPY): <strong>${keywordList || "(no tags – use the video title)"}</strong></li>
           <li>Watch the entire video with "Stats for nerds" enabled. The total framerate MUST be over: <strong>${framerateOnce}</strong></li>
           <li>Rewatch the same video again by moving the timestamp to the beginning. The new total framerate on "Stats for nerds" after rewatching MUST be over: <strong>${framerateTwice}</strong></li>
           <li>Add/upload all relevant details and add screenshots as required.</li>

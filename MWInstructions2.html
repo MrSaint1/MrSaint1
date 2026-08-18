@@ -5,231 +5,156 @@
   <title>Video Task Instructions</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      max-width: 800px;
-      margin: 24px auto;
-      padding: 0 16px;
-      line-height: 1.6;
-
-      /* Disable text selection */
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
+      max-width: 720px; margin: 0 auto; padding: 24px 16px 48px;
+      line-height: 1.65; background: #111; color: #e8e8e8;
+      -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
     }
-    h1 {
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
+    .section { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 20px 24px; margin-bottom: 16px; }
+    .label {
+      display: inline-block; background: #f59e0b; color: #000; font-weight: 700;
+      font-size: 0.95rem; padding: 4px 12px; border-radius: 4px; margin-bottom: 12px;
+      text-transform: uppercase; letter-spacing: 0.03em;
     }
-    .thumbnail {
-      max-width: 100%;
-      height: auto;
-      border-radius: 12px;
-      margin: 12px 0 16px;
-      display: block;
-      pointer-events: none; /* Can't drag image easily */
+    .keywords { list-style: none; padding: 0; }
+    .keywords li { font-size: 1.15rem; padding: 6px 0; border-bottom: 1px solid #2a2a2a; font-weight: 500; }
+    .keywords li:last-child { border-bottom: none; }
+    .thumb-wrap { margin-top: 12px; border-radius: 10px; overflow: hidden; border: 2px solid #333; display: inline-block; max-width: 750px; }
+    .thumb-wrap img { display: block; max-width: 100%; height: auto; pointer-events: none; }
+    .channel-name { margin-top: 10px; font-size: 1rem; color: #ccc; }
+    .channel-name strong { color: #fff; }
+    .steps { counter-reset: step; list-style: none; padding: 0; }
+    .steps li {
+      counter-increment: step; position: relative; padding: 12px 0 12px 48px;
+      border-bottom: 1px solid #222; font-size: 1rem;
     }
-    ol {
-      margin-left: 1.2rem;
+    .steps li:last-child { border-bottom: none; }
+    .steps li::before {
+      content: counter(step); position: absolute; left: 0; top: 12px;
+      width: 32px; height: 32px; background: #f59e0b; color: #000;
+      font-weight: 700; font-size: 0.95rem; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
     }
-    strong {
-      font-weight: 600;
+    .val {
+      display: inline-block; background: rgba(245,158,11,0.13);
+      border: 1px solid rgba(245,158,11,0.4); color: #f59e0b;
+      font-weight: 700; padding: 1px 8px; border-radius: 4px;
+      font-family: "SF Mono", "Fira Code", monospace;
     }
-    .meta {
-      font-size: 0.85rem;
-      color: #666;
-      margin-top: 12px;
-    }
-    .error {
-      color: #b00020;
-      font-weight: 600;
+    .meta { font-size: 0.8rem; color: #555; margin-top: 20px; text-align: center; }
+    .warning {
+      background: #7f1d1d44; border: 1px solid #dc262655; border-radius: 8px;
+      padding: 12px 16px; margin-top: 12px; font-size: 0.9rem; color: #fca5a5;
     }
   </style>
 </head>
-
-<!-- disable right-click, text selection and drag -->
-<body oncontextmenu="return false"
-      onselectstart="return false"
-      ondragstart="return false">
-  <h1>Video Task Instructions</h1>
-  <div id="content">Loading latest videos…</div>
-
+<body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
+  <div id="content">Loading…</div>
   <script>
-    // === Disable copy shortcuts & copy event ===
-    document.addEventListener("copy", function (e) {
-      e.preventDefault();
-      // Optional: show a message (you can remove this line if you don't want a popup)
-      // alert("Copying is disabled on this page.");
+    document.addEventListener("copy",function(e){e.preventDefault();});
+    document.addEventListener("keydown",function(e){
+      var ctrl=navigator.platform.toUpperCase().includes("MAC")?e.metaKey:e.ctrlKey;
+      if(ctrl&&["c","x","a"].includes(e.key.toLowerCase()))e.preventDefault();
     });
 
-    document.addEventListener("keydown", function (e) {
-      const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
-      const ctrlOrCmd = isMac ? e.metaKey : e.ctrlKey;
-      // Block Ctrl/Cmd + C, Ctrl/Cmd + X, Ctrl/Cmd + A (select all)
-      if (ctrlOrCmd && ["c", "x", "a"].includes(e.key.toLowerCase())) {
-        e.preventDefault();
+    var INSTR = {"search":"Search for one of the keywords above on <strong>YouTube</strong>.","find":"Find the video with the thumbnail shown above from <strong>{channel}</strong> and click it.","stats":"Right-click on the video player and enable <strong>“Stats for nerds”</strong> before pressing play.","like":"","comment":"","proof":"Upload all required screenshots as proof."};
+
+    var ALL_VIDEOS = [
+      {
+        "keywords": [
+          "how to make money with gohighlevel"
+        ],
+        "thumbnailUrl": "https://i.postimg.cc/7Ymwhf2q/maxresdefault-(1).webp",
+        "channelName": "Tutorial Stack",
+        "videoDurationSeconds": 695,
+        "minWatchMinutes": 7,
+        "watchCount": 1,
+        "watchEntirely": true,
+        "weight": 1.2,
+        "proofQuestion": "",
+        "videoTitle": ""
+      },
+      {
+        "keywords": [
+          "gohighlevel automation",
+          "gohighlevel automation tutorial"
+        ],
+        "thumbnailUrl": "https://i.postimg.cc/wjCPjp03/mqdefault-(1).webp",
+        "channelName": "Tutorial Stack",
+        "videoDurationSeconds": 428,
+        "minWatchMinutes": 7,
+        "watchCount": 2,
+        "watchEntirely": true,
+        "weight": 1,
+        "proofQuestion": "",
+        "videoTitle": ""
+      },
+      {
+        "keywords": [
+          "shopify affiliate app",
+          "shopify affiliate program",
+          "uppromote"
+        ],
+        "thumbnailUrl": "https://i.postimg.cc/Y9nzjNMM/BEST-SHOPIFY-AFFILIATE-APP.jpg",
+        "channelName": "Tutorial Stack",
+        "videoDurationSeconds": 314,
+        "minWatchMinutes": 7,
+        "watchCount": 1,
+        "watchEntirely": true,
+        "weight": 1,
+        "proofQuestion": "",
+        "videoTitle": ""
+      },
+      {
+        "keywords": [
+          "shopify influencer marketing",
+          "influencer marketing shopify",
+          "uppromote tutorial"
+        ],
+        "thumbnailUrl": "https://i.postimg.cc/HxZ9j0dT/SHOPIFY-INFLUENCER-MARKETING-SETUP.jpg",
+        "channelName": "Tutorial Stack",
+        "videoDurationSeconds": 377,
+        "minWatchMinutes": 7,
+        "watchCount": 1,
+        "watchEntirely": true,
+        "weight": 1,
+        "proofQuestion": "",
+        "videoTitle": ""
       }
-    });
+    ];
+    var tw=0,i;
+    for(i=0;i<ALL_VIDEOS.length;i++)tw+=(ALL_VIDEOS[i].weight||1);
+    var r=Math.random()*tw,cum=0,c=ALL_VIDEOS[ALL_VIDEOS.length-1];
+    for(i=0;i<ALL_VIDEOS.length;i++){cum+=(ALL_VIDEOS[i].weight||1);if(r<cum){c=ALL_VIDEOS[i];break;}}
 
-    // === CONFIG – change these ===
-    const API_KEY = "AIzaSyB9b6Xk_HXyzwIv9TxGhBLrg4wjT1UwbSc";          // ← your YouTube Data API key
-    const CHANNEL_ID = "UC3_1NCqJD5Ba9QYWhihksbw";    // ← your channel ID
-    const MAX_RESULTS = 5;                   // how many latest videos to consider
-
-    const contentEl = document.getElementById("content");
-
-    // Parse ISO 8601 YouTube duration (e.g. PT3M45S) → seconds
-    function isoDurationToSeconds(iso) {
-      const match = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
-      if (!match) return 0;
-      const hours = parseInt(match[1] || "0", 10);
-      const minutes = parseInt(match[2] || "0", 10);
-      const seconds = parseInt(match[3] || "0", 10);
-      return hours * 3600 + minutes * 60 + seconds;
-    }
-
-    function pickRandom(arr) {
-      if (!arr || arr.length === 0) return null;
-      const idx = Math.floor(Math.random() * arr.length);
-      return arr[idx];
-    }
-
-    async function fetchLatestVideos() {
-      // 1) Get the "uploads" playlist ID for this channel
-      const channelsUrl = new URL("https://www.googleapis.com/youtube/v3/channels");
-      channelsUrl.searchParams.set("key", API_KEY);
-      channelsUrl.searchParams.set("id", CHANNEL_ID);
-      channelsUrl.searchParams.set("part", "contentDetails");
-
-      const channelsRes = await fetch(channelsUrl.toString());
-      if (!channelsRes.ok) {
-        throw new Error("Failed to fetch channel details");
-      }
-      const channelsData = await channelsRes.json();
-
-      const uploadsPlaylistId =
-        channelsData.items?.[0]?.contentDetails?.relatedPlaylists?.uploads;
-
-      if (!uploadsPlaylistId) {
-        throw new Error("Could not find uploads playlist for this channel.");
-      }
-
-      // 2) Get latest items from the uploads playlist (these ARE your latest uploads)
-      const playlistUrl = new URL("https://www.googleapis.com/youtube/v3/playlistItems");
-      playlistUrl.searchParams.set("key", API_KEY);
-      playlistUrl.searchParams.set("playlistId", uploadsPlaylistId);
-      playlistUrl.searchParams.set("part", "contentDetails,snippet");
-      playlistUrl.searchParams.set("maxResults", MAX_RESULTS.toString());
-
-      const playlistRes = await fetch(playlistUrl.toString());
-      if (!playlistRes.ok) {
-        throw new Error("Failed to fetch uploads playlist items");
-      }
-      const playlistData = await playlistRes.json();
-
-      const playlistItems = playlistData.items || [];
-      if (!playlistItems.length) {
-        throw new Error("No videos found in uploads playlist.");
-      }
-
-      // Extract video IDs from the playlist items
-      const videoIds = playlistItems
-        .map(item => item.contentDetails && item.contentDetails.videoId)
-        .filter(Boolean);
-
-      if (!videoIds.length) {
-        throw new Error("No valid video IDs found in uploads playlist.");
-      }
-
-      // 3) Get video details (duration + tags) for exactly these videos
-      const videosUrl = new URL("https://www.googleapis.com/youtube/v3/videos");
-      videosUrl.searchParams.set("key", API_KEY);
-      videosUrl.searchParams.set("id", videoIds.join(","));
-      videosUrl.searchParams.set("part", "contentDetails,snippet");
-
-      const videosRes = await fetch(videosUrl.toString());
-      if (!videosRes.ok) {
-        throw new Error("Failed to fetch video details");
-      }
-      const videosData = await videosRes.json();
-
-      let videos = videosData.items || [];
-
-      // 4) Just to be extra-safe, sort them by publishedAt DESC and limit to MAX_RESULTS
-      videos = videos
-        .filter(v => v.snippet && v.snippet.publishedAt)
-        .sort(
-          (a, b) =>
-            new Date(b.snippet.publishedAt).getTime() -
-            new Date(a.snippet.publishedAt).getTime()
-        )
-        .slice(0, MAX_RESULTS);
-
-      return videos;
-    }
-
- function renderInstructions(video) {
-  const snippet = video.snippet || {};
-  const contentDetails = video.contentDetails || {};
-
-  const title = snippet.title || "Untitled video";
-  const tags = Array.isArray(snippet.tags) ? snippet.tags : [];
-  const durationIso = contentDetails.duration || "PT0S";
-  const thumbUrl =
-    (snippet.thumbnails && (snippet.thumbnails.maxres?.url ||
-                            snippet.thumbnails.high?.url ||
-                            snippet.thumbnails.medium?.url ||
-                            snippet.thumbnails.default?.url)) || "";
-
-  // Duration → frames thresholds
-  const totalSeconds = isoDurationToSeconds(durationIso);
-  const framerateOnce = totalSeconds * 60;      // formula: seconds * 60
-  const framerateTwice = totalSeconds * 60 * 2; // formula: seconds * 60 * 2
-
-  // Only the first tag (if any)
-  const firstTag = Array.isArray(tags) && tags.length ? tags[0] : "";
-  const keywordText = firstTag || "(no tags – use the video title)";
-
-  // Build the exact instructions text you described
-  const block = `
-    <p><strong>Video thumbnail:</strong></p>
-    ${thumbUrl ? `<img src="${thumbUrl}" alt="Video thumbnail" class="thumbnail" />` : ""}
-    <h2>Instructions:</h2>
-    <ol>
-      <li>Open YouTube and search for the following keyword (TYPE it – do NOT COPY): <strong>${keywordText}</strong></li>
-      <li>Watch the entire video with "Stats for nerds" enabled. The total framerate MUST be over: <strong>${framerateOnce}</strong></li>
-      <li>Rewatch the same video again by moving the timestamp to the beginning. The new total framerate on "Stats for nerds" after rewatching MUST be over: <strong>${framerateTwice}</strong></li>
-      <li> & then ADD/upload all relevant details and add screenshots as required.</li>      
-     
-              
-    </ol>
-    <p class="meta">
-      Video used for this task: <strong>${title}</strong><br/>
-      Duration: ${totalSeconds} seconds (${durationIso})
-    </p>
-  `;
-
-  contentEl.innerHTML = block;
-}
-
-
-    async function init() {
-      try {
-        const videos = await fetchLatestVideos();
-        const chosen = pickRandom(videos);
-        if (!chosen) {
-          throw new Error("No video selected.");
-        }
-        renderInstructions(chosen);
-      } catch (err) {
-        console.error(err);
-        contentEl.innerHTML =
-          '<p class="error">Error loading instructions. Please try again later.</p>';
-      }
-    }
-
-    init();
+    (function render(c){
+      var fps=60,dSec=c.videoDurationSeconds,minSec=c.minWatchMinutes*60;
+      var isEntire=c.watchEntirely||(dSec<=minSec);
+      var reqSec=isEntire?dSec:minSec;
+      var wc=Math.max(1,c.watchCount||1);
+      var firstFrames=reqSec*fps;
+      var kwH=c.keywords.filter(function(k){return k.trim();}).map(function(k){return"<li>"+k+"</li>";}).join("");
+      var fmt=function(s){return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");};
+      var wt=isEntire?"Watch the <strong>entire video</strong> ("+fmt(dSec)+").":"Watch the video for at least <strong>"+c.minWatchMinutes+" minutes</strong>.";
+      var wn=isEntire?fmt(dSec):c.minWatchMinutes+" minute"+(c.minWatchMinutes>1?"s":"");
+      var st=[];
+      st.push(INSTR.search);
+      st.push(INSTR.find.replace("{channel}",c.channelName));
+      st.push(INSTR.stats);
+      st.push(wt+" Your \u201CStats for nerds\u201D frame count must be over: <span class=\"val\">"+firstFrames.toLocaleString()+"</span>");
+      for(var w=2;w<=wc;w++){st.push("Rewatch by moving the timestamp back to the beginning. Total frame count must be over: <span class=\"val\">"+(reqSec*fps*w).toLocaleString()+"</span>");}
+      if(INSTR.like)st.push(INSTR.like);
+      if(INSTR.comment)st.push(INSTR.comment);
+      if(c.proofQuestion){st.push("In the proof section, answer: <strong>\u201C"+c.proofQuestion+"\u201D</strong> \u2014 then upload screenshots as required.");}else{st.push(INSTR.proof);}
+      var stH=st.map(function(s){return"<li>"+s+"</li>";}).join("");
+      document.getElementById("content").innerHTML=
+        '<div class="section"><span class="label">Search for one of these keywords on YouTube:</span><ul class="keywords">'+kwH+'</ul></div>'+
+        '<div class="section"><span class="label">Look for this thumbnail in the search results:</span><div class="thumb-wrap"><img src="'+c.thumbnailUrl+'" alt="Video thumbnail" /></div><p class="channel-name">YT Channel: <strong>'+c.channelName+'</strong></p></div>'+
+        '<div class="section"><span class="label">Instructions:</span><ol class="steps">'+stH+'</ol><div class="warning">\u26A0 If you watch less than '+wn+', you will not be paid.</div></div>'+
+        '<p class="meta">'+(c.videoTitle||"")+' \u00B7 '+fmt(dSec)+'</p>';
+    })(c);
   </script>
 </body>
 </html>

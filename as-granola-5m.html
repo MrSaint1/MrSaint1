@@ -61,10 +61,11 @@
 
     var INSTR = {"search":"Search for one of the keywords above on <strong>YouTube</strong>.","find":"Find the video with the thumbnail shown above from <strong>{channel}</strong> and click it.","stats":"Right-click on the video player and enable <strong>“Stats for nerds”</strong> before pressing play.","like":"","comment":"","proof":"Upload all required screenshots as proof."};
 
-    var c = {
+    var ALL_VIDEOS = [
+      {
         "keywords": [
-            "Granola AI tutorial",
-            "Granola AI for beginners"
+          "Granola AI tutorial",
+          "Granola AI for beginners"
         ],
         "thumbnailUrl": "https://i.postimg.cc/tTyK6rnj/maxresdefault-(1).webp",
         "channelName": "Automation Stack",
@@ -75,7 +76,43 @@
         "weight": 1,
         "proofQuestion": "",
         "videoTitle": ""
-    };
+      },
+      {
+        "keywords": [
+          "Granola MCP",
+          "Granola MCP tutorial"
+        ],
+        "thumbnailUrl": "https://i.postimg.cc/1tPkFWVh/maxresdefault-(2).webp",
+        "channelName": "Automation Stack",
+        "videoDurationSeconds": 1000,
+        "minWatchMinutes": 5,
+        "watchCount": 1,
+        "watchEntirely": false,
+        "weight": 1,
+        "proofQuestion": "",
+        "videoTitle": ""
+      },
+      {
+        "keywords": [
+          "how to use Granola AI",
+          "Granola AI app",
+          "Granola AI meeting notes"
+        ],
+        "thumbnailUrl": "https://i.postimg.cc/V61xt701/mqdefault-(2).webp",
+        "channelName": "Automation Stack",
+        "videoDurationSeconds": 1000,
+        "minWatchMinutes": 5,
+        "watchCount": 1,
+        "watchEntirely": false,
+        "weight": 1,
+        "proofQuestion": "",
+        "videoTitle": ""
+      }
+    ];
+    var tw=0,i;
+    for(i=0;i<ALL_VIDEOS.length;i++)tw+=(ALL_VIDEOS[i].weight||1);
+    var r=Math.random()*tw,cum=0,c=ALL_VIDEOS[ALL_VIDEOS.length-1];
+    for(i=0;i<ALL_VIDEOS.length;i++){cum+=(ALL_VIDEOS[i].weight||1);if(r<cum){c=ALL_VIDEOS[i];break;}}
 
     (function render(c){
       var fps=60,dSec=c.videoDurationSeconds,minSec=c.minWatchMinutes*60;

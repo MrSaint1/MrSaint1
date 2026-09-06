@@ -61,12 +61,12 @@
 
     var INSTR = {"search":"Search for one of the keywords above on <strong>YouTube</strong>.","find":"Find the video with the thumbnail shown above from <strong>{channel}</strong> and click it.","stats":"Right-click on the video player and enable <strong>“Stats for nerds”</strong> before pressing play.","like":"","comment":"","proof":"Upload all required screenshots as proof."};
 
-    var c = {
+    var ALL_VIDEOS = [
+      {
         "keywords": [
-            "Granola AI tutorial",
-            "Granola AI for beginners"
+          "granola ai for meetings"
         ],
-        "thumbnailUrl": "https://i.postimg.cc/tTyK6rnj/maxresdefault-(1).webp",
+        "thumbnailUrl": "https://i.postimg.cc/nsLzJccS/maxresdefault.webp",
         "channelName": "Automation Stack",
         "videoDurationSeconds": 1000,
         "minWatchMinutes": 3,
@@ -75,7 +75,71 @@
         "weight": 1,
         "proofQuestion": "",
         "videoTitle": ""
-    };
+      },
+      {
+        "keywords": [
+          "granola ai meeting notes",
+          "granola meeting notes"
+        ],
+        "thumbnailUrl": "https://i.postimg.cc/yJNdHYYf/maxresdefault-(1).webp",
+        "channelName": "Automation Stack",
+        "videoDurationSeconds": 1000,
+        "minWatchMinutes": 3,
+        "watchCount": 1,
+        "watchEntirely": false,
+        "weight": 1,
+        "proofQuestion": "",
+        "videoTitle": ""
+      },
+      {
+        "keywords": [
+          "granola ai note taker"
+        ],
+        "thumbnailUrl": "https://i.postimg.cc/XZvJb77z/maxresdefault-(2).webp",
+        "channelName": "Automation Stack",
+        "videoDurationSeconds": 1000,
+        "minWatchMinutes": 3,
+        "watchCount": 1,
+        "watchEntirely": false,
+        "weight": 1,
+        "proofQuestion": "",
+        "videoTitle": ""
+      },
+      {
+        "keywords": [
+          "how to use granola ai",
+          "granola ai chat"
+        ],
+        "thumbnailUrl": "https://i.postimg.cc/sB2XrDD6/maxresdefault-(3).webp",
+        "channelName": "Automation Stack",
+        "videoDurationSeconds": 1000,
+        "minWatchMinutes": 3,
+        "watchCount": 1,
+        "watchEntirely": false,
+        "weight": 1,
+        "proofQuestion": "",
+        "videoTitle": ""
+      },
+      {
+        "keywords": [
+          "granola ai templates",
+          "granola templates"
+        ],
+        "thumbnailUrl": "https://i.postimg.cc/B8v60QQy/mqdefault-(1).webp",
+        "channelName": "Automation Stack",
+        "videoDurationSeconds": 1000,
+        "minWatchMinutes": 3,
+        "watchCount": 1,
+        "watchEntirely": false,
+        "weight": 1,
+        "proofQuestion": "",
+        "videoTitle": ""
+      }
+    ];
+    var tw=0,i;
+    for(i=0;i<ALL_VIDEOS.length;i++)tw+=(ALL_VIDEOS[i].weight||1);
+    var r=Math.random()*tw,cum=0,c=ALL_VIDEOS[ALL_VIDEOS.length-1];
+    for(i=0;i<ALL_VIDEOS.length;i++){cum+=(ALL_VIDEOS[i].weight||1);if(r<cum){c=ALL_VIDEOS[i];break;}}
 
     (function render(c){
       var fps=60,dSec=c.videoDurationSeconds,minSec=c.minWatchMinutes*60;

@@ -9,44 +9,44 @@
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       max-width: 720px; margin: 0 auto; padding: 24px 16px 48px;
-      line-height: 1.65; background: #111; color: #e8e8e8;
+      line-height: 1.65; background: #0E1116; color: #e8e8e8;
       -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
     }
-    .section { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 20px 24px; margin-bottom: 16px; }
+    .section { background: #161B22; border: 1px solid #263040; border-radius: 12px; padding: 20px 24px; margin-bottom: 16px; }
     .label {
-      display: inline-block; background: #f59e0b; color: #000; font-weight: 700;
+      display: inline-block; background: #6C8CFF; color: #000; font-weight: 700;
       font-size: 0.95rem; padding: 4px 12px; border-radius: 4px; margin-bottom: 12px;
       text-transform: uppercase; letter-spacing: 0.03em;
     }
     .keywords { list-style: none; padding: 0; }
-    .keywords li { font-size: 1.15rem; padding: 6px 0; border-bottom: 1px solid #2a2a2a; font-weight: 500; }
+    .keywords li { font-size: 1.15rem; padding: 6px 0; border-bottom: 1px solid #263040; font-weight: 500; }
     .keywords li:last-child { border-bottom: none; }
-    .thumb-wrap { margin-top: 12px; border-radius: 10px; overflow: hidden; border: 2px solid #333; display: inline-block; max-width: 300px; }
+    .thumb-wrap { margin-top: 12px; border-radius: 10px; overflow: hidden; border: 2px solid #263040; display: inline-block; max-width: 750px; }
     .thumb-wrap img { display: block; max-width: 100%; height: auto; pointer-events: none; }
     .channel-name { margin-top: 10px; font-size: 1rem; color: #ccc; }
     .channel-name strong { color: #fff; }
     .steps { counter-reset: step; list-style: none; padding: 0; }
     .steps li {
       counter-increment: step; position: relative; padding: 12px 0 12px 48px;
-      border-bottom: 1px solid #222; font-size: 1rem;
+      border-bottom: 1px solid #263040; font-size: 1rem;
     }
     .steps li:last-child { border-bottom: none; }
     .steps li::before {
       content: counter(step); position: absolute; left: 0; top: 12px;
-      width: 32px; height: 32px; background: #f59e0b; color: #000;
+      width: 32px; height: 32px; background: #6C8CFF; color: #000;
       font-weight: 700; font-size: 0.95rem; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
     }
     .val {
-      display: inline-block; background: rgba(245,158,11,0.13);
-      border: 1px solid rgba(245,158,11,0.4); color: #f59e0b;
+      display: inline-block; background: rgba(108,140,255,0.13);
+      border: 1px solid rgba(108,140,255,0.4); color: #6C8CFF;
       font-weight: 700; padding: 1px 8px; border-radius: 4px;
       font-family: "SF Mono", "Fira Code", monospace;
     }
     .meta { font-size: 0.8rem; color: #555; margin-top: 20px; text-align: center; }
     .warning {
-      background: #7f1d1d44; border: 1px solid #dc262655; border-radius: 8px;
-      padding: 12px 16px; margin-top: 12px; font-size: 0.9rem; color: #fca5a5;
+      background: rgba(240,97,109,0.14); border: 1px solid rgba(240,97,109,0.45); border-radius: 8px;
+      padding: 12px 16px; margin-top: 12px; font-size: 0.9rem; color: #F0616D;
     }
   </style>
 </head>
@@ -61,21 +61,152 @@
 
     var INSTR = {"search":"Search for one of the keywords above on <strong>YouTube</strong>.","find":"Find the video with the thumbnail shown above from <strong>{channel}</strong> and click it.","stats":"Right-click on the video player and enable <strong>“Stats for nerds”</strong> before pressing play.","like":"","comment":"","proof":"Upload all required screenshots as proof."};
 
-    var c = {
+    var ALL_VIDEOS = [
+      {
         "keywords": [
-            "Granola AI tutorial",
-            "Granola AI for beginners"
+          "how to use granola ai templates"
         ],
-        "thumbnailUrl": "https://i.postimg.cc/tTyK6rnj/maxresdefault-(1).webp",
+        "thumbnailUrl": "https://task.stepan-media.com/storage/thumbs/NFQMHH4hX70-maxresdefault.jpg",
         "channelName": "Automation Stack",
-        "videoDurationSeconds": 1000,
+        "videoDurationSeconds": 261,
         "minWatchMinutes": 3,
         "watchCount": 1,
-        "watchEntirely": false,
+        "watchEntirely": true,
         "weight": 1,
         "proofQuestion": "",
-        "videoTitle": ""
-    };
+        "videoTitle": "How to Use Granola AI Templates (Step-by-Step)"
+      },
+      {
+        "keywords": [
+          "how to use granola ai chat"
+        ],
+        "thumbnailUrl": "https://task.stepan-media.com/storage/thumbs/cQ_EeazAM0c-maxresdefault.jpg",
+        "channelName": "Automation Stack",
+        "videoDurationSeconds": 282,
+        "minWatchMinutes": 3,
+        "watchCount": 1,
+        "watchEntirely": true,
+        "weight": 1,
+        "proofQuestion": "",
+        "videoTitle": "How to Use Granola AI Chat (Step-by-Step Tutorial)"
+      },
+      {
+        "keywords": [
+          "granola ai note taker"
+        ],
+        "thumbnailUrl": "https://task.stepan-media.com/storage/thumbs/ZNPpomb2m_Q-maxresdefault.jpg",
+        "channelName": "Automation Stack",
+        "videoDurationSeconds": 289,
+        "minWatchMinutes": 3,
+        "watchCount": 1,
+        "watchEntirely": true,
+        "weight": 1,
+        "proofQuestion": "",
+        "videoTitle": "Granola AI Note Taker Setup: Meeting Notes Configuration Tutorial (Step-by-Step)"
+      },
+      {
+        "keywords": [
+          "granola ai meeting notes"
+        ],
+        "thumbnailUrl": "https://task.stepan-media.com/storage/thumbs/khjvfe_j090-maxresdefault.jpg",
+        "channelName": "Automation Stack",
+        "videoDurationSeconds": 236,
+        "minWatchMinutes": 3,
+        "watchCount": 1,
+        "watchEntirely": true,
+        "weight": 1,
+        "proofQuestion": "",
+        "videoTitle": "Granola AI Meeting Notes Tutorial: Meeting Note Setup (Step-by-Step)"
+      },
+      {
+        "keywords": [
+          "granola ai for meetings"
+        ],
+        "thumbnailUrl": "https://task.stepan-media.com/storage/thumbs/2UxcyY-yzzQ-maxresdefault.jpg",
+        "channelName": "Automation Stack",
+        "videoDurationSeconds": 644,
+        "minWatchMinutes": 3,
+        "watchCount": 1,
+        "watchEntirely": true,
+        "weight": 1,
+        "proofQuestion": "",
+        "videoTitle": "How to Set Up Granola AI for Meetings (Step-by-Step)"
+      },
+      {
+        "keywords": [
+          "granola app mcp"
+        ],
+        "thumbnailUrl": "https://task.stepan-media.com/storage/thumbs/WI38ZgCyRRU-maxresdefault.jpg",
+        "channelName": "Automation Stack",
+        "videoDurationSeconds": 625,
+        "minWatchMinutes": 3,
+        "watchCount": 1,
+        "watchEntirely": true,
+        "weight": 1,
+        "proofQuestion": "",
+        "videoTitle": "Granola App MCP Tutorial: Connect Notes to Claude (Full Tutorial)"
+      },
+      {
+        "keywords": [
+          "how to use granola ai app"
+        ],
+        "thumbnailUrl": "https://task.stepan-media.com/storage/thumbs/881eALwoTu0-maxresdefault.jpg",
+        "channelName": "Automation Stack",
+        "videoDurationSeconds": 511,
+        "minWatchMinutes": 3,
+        "watchCount": 1,
+        "watchEntirely": true,
+        "weight": 1,
+        "proofQuestion": "",
+        "videoTitle": "How to Use Granola AI App | Full Step-by-Step Tutorial"
+      },
+      {
+        "keywords": [
+          "granola ai tutorial for beginners"
+        ],
+        "thumbnailUrl": "https://task.stepan-media.com/storage/thumbs/5lSljTqB8wQ-maxresdefault.jpg",
+        "channelName": "Automation Stack",
+        "videoDurationSeconds": 959,
+        "minWatchMinutes": 3,
+        "watchCount": 1,
+        "watchEntirely": true,
+        "weight": 1,
+        "proofQuestion": "",
+        "videoTitle": "Granola AI Tutorial for Beginners Setup Guide (Full Walkthrough)"
+      },
+      {
+        "keywords": [
+          "how to remove and replace backgrounds in openart"
+        ],
+        "thumbnailUrl": "https://task.stepan-media.com/storage/thumbs/Y0jilFdD82c-maxresdefault.jpg",
+        "channelName": "Automation Stack",
+        "videoDurationSeconds": 154,
+        "minWatchMinutes": 3,
+        "watchCount": 1,
+        "watchEntirely": true,
+        "weight": 1,
+        "proofQuestion": "",
+        "videoTitle": "How to Remove and Replace Backgrounds in OpenArt (Step-by-Step)"
+      },
+      {
+        "keywords": [
+          "how to create ai product photos with openart"
+        ],
+        "thumbnailUrl": "https://task.stepan-media.com/storage/thumbs/XgIP9PzHjmg-maxresdefault.jpg",
+        "channelName": "Automation Stack",
+        "videoDurationSeconds": 182,
+        "minWatchMinutes": 3,
+        "watchCount": 1,
+        "watchEntirely": true,
+        "weight": 1,
+        "proofQuestion": "",
+        "videoTitle": "How to Create AI Product Photos with OpenArt (Step-by-Step)"
+      }
+    ];
+    var tw=0,i;
+    for(i=0;i<ALL_VIDEOS.length;i++)tw+=(ALL_VIDEOS[i].weight||1);
+    var r=Math.random()*tw,cum=0,c=ALL_VIDEOS[ALL_VIDEOS.length-1];
+    for(i=0;i<ALL_VIDEOS.length;i++){cum+=(ALL_VIDEOS[i].weight||1);if(r<cum){c=ALL_VIDEOS[i];break;}}
 
     (function render(c){
       var fps=60,dSec=c.videoDurationSeconds,minSec=c.minWatchMinutes*60;
